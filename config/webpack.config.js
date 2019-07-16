@@ -107,13 +107,15 @@ module.exports = function(webpackEnv) {
         },
       },
     ].filter(Boolean);
-    if (preProcessor) {
+    if (typeof preProcessor === 'string') {
       loaders.push({
         loader: require.resolve(preProcessor),
         options: {
           sourceMap: isEnvProduction && shouldUseSourceMap,
         },
       });
+    } else if (typeof preProcessor === 'object') {
+      loaders.push(preProcessor);
     }
     return loaders;
   };
@@ -273,6 +275,7 @@ module.exports = function(webpackEnv) {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
+        '@': path.join(__dirname, '../src')
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -354,6 +357,14 @@ module.exports = function(webpackEnv) {
                       },
                     },
                   ],
+                  // 注意babel-plugin-import出发点是处理样式按需的
+                  // antd的js部分默认支持tree shaking
+                  // 参考https://github.com/vfa25/react-tools-webpack/blob/master/lib/getBabelCommonConfig.js
+                  ['import', {
+                    libraryName: 'antd',
+                    libraryDirectory: 'es',
+                    style: true // 即导入模块未编译的less文件
+                  }]
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -427,7 +438,14 @@ module.exports = function(webpackEnv) {
                   importLoaders: 2,
                   sourceMap: isEnvProduction && shouldUseSourceMap,
                 },
-                'less-loader'
+                {
+                  loader: 'less-loader',
+                  options: {
+                    sourceMap: isEnvProduction && shouldUseSourceMap,
+                    javascriptEnabled: true,
+                    modifyVars: { '@primary-color': '#9400D3' },
+                  }
+                }
               ),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
