@@ -443,7 +443,7 @@ module.exports = function(webpackEnv) {
                   options: {
                     sourceMap: isEnvProduction && shouldUseSourceMap,
                     javascriptEnabled: true,
-                    modifyVars: { '@primary-color': '#9400D3' },
+                    modifyVars: { '@primary-color': '#4169E1' },
                   }
                 }
               ),
