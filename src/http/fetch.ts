@@ -2,8 +2,9 @@
  * axios封装
  */
 import { AxiosPromise, AxiosRequestConfig } from 'axios'
+import JsonP from 'jsonp';
 import axios from './config';
-import { tuple } from '../_util/type';
+import { tuple } from '../utils/type';
 export * from 'axios';
 
 // http方法
@@ -18,7 +19,6 @@ const fetchCfg: fetchMap<any> = {};
 // @types/webpack-env
 const requireContext = require.context('./apiModules', false, /\.ts$/)
 requireContext.keys().forEach(path => {
-
   let module = path.replace('.ts', '').replace('./', '')
   fetchCfg[module] = requireContext(path).default
 })
@@ -49,55 +49,76 @@ interface Map<T> {
   [key: string]: T;
 }
 
+type jsonpOptions = {
+  url: string
+}
 
-/**
- * 对axios封装通用fetch方法
- * 根据传入的下列参数自动寻找 method 和路径
- * @param moduleInfo 对应fetch配置的名字
- * @param payload 负载
- * @param config http配置
- */
-export default function fetch(
-  moduleInfo: string, payload?: object, config?: AxiosRequestConfig): AxiosPromise {
-  let prefix = '';
-  const moduleName = fetchParam(moduleInfo)['moduleName'];
-  const apiName: string[] = fetchParam(moduleInfo)['apiName'].split('.');
-  const id = fetchParam(moduleInfo)['id'];
-  // 判断没有找到传入模块
-  if (!fetchCfg.hasOwnProperty(moduleName)) {
-    throw new Error(
-      `[Error in fetch]: 在api配置文件中未找到模块 -> ${moduleName}`
-    );
-  }
-  // 判断没有找到对应接口
-  let item;
-  let fetchInfo = fetchCfg[moduleName];
-  while (apiName.length) {
-    item = apiName.shift();
-    fetchInfo = fetchInfo[item!];
-  }
-  if (!fetchInfo) {
-    throw new Error(
-      `[Error in fetch]: 在模块${moduleName}中未找到接口 -> ${fetchParam(moduleInfo)['apiName']}`
-    );
-  } else if (!fetchInfo.url || !fetchInfo.method) {
-    throw new Error(
-      `[Error in fetch]: 模块${moduleName}中的${fetchParam(moduleInfo)['apiName']}接口，存在url或method未声明`
-    );
-  }
-  let method: Method = fetchInfo['method'];
-  let url = fetchInfo['url'];
-  if (fetchInfo['url'].charAt(0) === '/') {
-    url = url.slice(1)
-  }
-  url = url.replace('/:id', id);
-  url = `${prefix}/${url}`;
+class Fetch {
+  /**
+   * 对axios封装通用fetch方法
+   * 根据传入的下列参数自动寻找 method 和路径
+   * @param moduleInfo 对应fetch配置的名字
+   * @param payload 负载
+   * @param config http配置
+   */
+  fetch(
+    moduleInfo: string, payload?: object, config?: AxiosRequestConfig): AxiosPromise {
+    let prefix = '';
+    const moduleName = fetchParam(moduleInfo)['moduleName'];
+    const apiName: string[] = fetchParam(moduleInfo)['apiName'].split('.');
+    const id = fetchParam(moduleInfo)['id'];
+    // 判断没有找到传入模块
+    if (!fetchCfg.hasOwnProperty(moduleName)) {
+      throw new Error(
+        `[Error in fetch]: 在api配置文件中未找到模块 -> ${moduleName}`
+      );
+    }
+    // 判断没有找到对应接口
+    let item;
+    let fetchInfo = fetchCfg[moduleName];
+    while (apiName.length) {
+      item = apiName.shift();
+      fetchInfo = fetchInfo[item!];
+    }
+    if (!fetchInfo) {
+      throw new Error(
+        `[Error in fetch]: 在模块${moduleName}中未找到接口 -> ${fetchParam(moduleInfo)['apiName']}`
+      );
+    } else if (!fetchInfo.url || !fetchInfo.method) {
+      throw new Error(
+        `[Error in fetch]: 模块${moduleName}中的${fetchParam(moduleInfo)['apiName']}接口，存在url或method未声明`
+      );
+    }
+    let method: Method = fetchInfo['method'];
+    let url = fetchInfo['url'];
+    if (fetchInfo['url'].charAt(0) === '/') {
+      url = url.slice(1)
+    }
+    url = url.replace('/:id', id);
+    url = `${prefix}/${url}`;
 
-  if (method === 'get') {
-    return axios['get'](url, { ...config, params: payload })
-  } else if (method === 'post' || method === 'put' || method === 'patch') {
-    return axios[method](url, payload, config)
-  } else {
-    return axios[method](url, config)
+    if (method === 'get') {
+      return axios['get'](url, { ...config, params: payload })
+    } else if (method === 'post' || method === 'put' || method === 'patch') {
+      return axios[method](url, payload, config)
+    } else {
+      return axios[method](url, config)
+    }
+  }
+
+  jsonp(options: jsonpOptions) {
+    return new Promise((resolve, reject) => {
+      JsonP(options.url, {
+        param: 'callback'
+      }, function (err: any, response: any) {
+        if (response.status === 'success') {
+          resolve(response)
+        } else {
+          reject(response.message)
+        }
+      })
+    })
   }
 }
+
+export default new Fetch();

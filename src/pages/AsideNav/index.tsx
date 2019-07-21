@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Menu } from 'antd';
-import fetch from '@/http/fetch';
+import http from '@/http/fetch';
 import './index.less';
 
 const { SubMenu, Item } = Menu;
 
 interface ItemMenu {
   id: number,
+  category_type: number,
   name: string,
   key?: string,
   children?: ItemMenu[]
@@ -25,7 +26,7 @@ export default class AsideNav extends React.Component<any, AsideNavState> {
   }
 
   componentDidMount() {
-    fetch('component.categorys').then(res => {
+    http.fetch('component.categorys').then(res => {
       let menuConfig = res.data
       const menuTreeNode = this.renderMenu(menuConfig);
       this.setState({
@@ -36,7 +37,7 @@ export default class AsideNav extends React.Component<any, AsideNavState> {
 
   renderMenu = (data: ItemMenu[]) => {
     return data.map((item) => {
-      if (item.children) {
+      if (item.children && item.category_type === 1) {
         return (
           <SubMenu title={item.name} key={item.id}>
             { this.renderMenu(item.children) }
@@ -56,7 +57,7 @@ export default class AsideNav extends React.Component<any, AsideNavState> {
           <h2>And</h2>
           <img className="logo-element" src="/assets/logo-element.svg" alt=""/>
         </div>
-        <Menu>
+        <Menu mode="inline">
           { this.state.menuTreeNode }
         </Menu>
       </div>

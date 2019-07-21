@@ -1,0 +1,35 @@
+@import '../../style/index';
+
+.header {
+  background-color: @color-white;
+  .header-top {
+    height: 60px;
+    line-height: 60px;
+    padding: 0 20px;
+    text-align: right;
+    a {
+      margin-left: 40px;
+    }
+  }
+  .breadcrumb {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 20px;
+    // overflow: hidden;
+    border-top: 1px solid @color-main;
+    .breadcrumb-title {
+      text-align: center;
+      font-size: @font18;
+      &:after {
+        position: absolute;
+        content: '';
+        left: calc(50% - 4.5px);
+        top: 38px;
+        border-top: 9px solid @color-white;
+        border-right: 9px solid transparent;
+        border-bottom: 9px solid transparent;
+        border-left: 9px solid transparent;
+      }
+    }
+  }
+}

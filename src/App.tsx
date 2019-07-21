@@ -1,12 +1,14 @@
 import React from 'react';
 import { Row, Col } from 'antd';
+import { hot } from 'react-hot-loader/root';
 import Header from '@/pages/Header';
 import Footer from '@/pages/Footer';
 import AsideNav from '@/pages/AsideNav';
-import './style/common.less';
+import Home from '@/pages/home/Home';
+import './style/layout.less';
 
 
-export default class Home extends React.Component {
+class App extends React.Component {
   render() {
     return (
       <Row className="container">
@@ -16,8 +18,8 @@ export default class Home extends React.Component {
         <Col span={20} className="main">
           <Header />
           <Row className="content">
-            content
-            {this.props.children}
+            <Home />
+            {/* {this.props.children} */}
           </Row>
           <Footer />
         </Col>
@@ -25,3 +27,5 @@ export default class Home extends React.Component {
     )
   }
 }
+
+export default hot(App);
