@@ -1,15 +1,16 @@
-import * as React from 'react';
-import { Menu } from 'antd';
-import http from '@/http/fetch';
-import './index.less';
+import * as React from 'react'
+import { Menu } from 'antd'
+import { NavLink } from 'react-router-dom'
+import http from '@/http/fetch'
+import './index.less'
 
-const { SubMenu, Item } = Menu;
+const { SubMenu, Item } = Menu
 
 interface ItemMenu {
-  id: number,
-  category_type: number,
-  name: string,
-  key?: string,
+  id: number
+  category_type: number
+  name: string
+  key?: string
   children?: ItemMenu[]
 }
 
@@ -28,7 +29,7 @@ export default class AsideNav extends React.Component<any, AsideNavState> {
   componentDidMount() {
     http.fetch('component.categorys').then(res => {
       let menuConfig = res.data
-      const menuTreeNode = this.renderMenu(menuConfig);
+      const menuTreeNode = this.renderMenu(menuConfig)
       this.setState({
         menuTreeNode
       })
@@ -36,15 +37,19 @@ export default class AsideNav extends React.Component<any, AsideNavState> {
   }
 
   renderMenu = (data: ItemMenu[]) => {
-    return data.map((item) => {
+    return data.map(item => {
       if (item.children && item.category_type === 1) {
         return (
           <SubMenu title={item.name} key={item.id}>
-            { this.renderMenu(item.children) }
+            {this.renderMenu(item.children)}
           </SubMenu>
         )
       }
-      return <Item key={item.id}>{item.name}</Item>;
+      return (
+        <Item key={item.id}>
+          <NavLink to={`/home${item.key}`}>{item.name}</NavLink>
+        </Item>
+      )
     })
   }
 
@@ -53,13 +58,11 @@ export default class AsideNav extends React.Component<any, AsideNavState> {
       <div>
         <div className="logo">
           <h2>Contrast</h2>
-          <img src="/assets/logo-antd.svg" alt=""/>
+          <img src="/assets/logo-antd.svg" alt="" />
           <h2>And</h2>
-          <img className="logo-element" src="/assets/logo-element.svg" alt=""/>
+          <img className="logo-element" src="/assets/logo-element.svg" alt="" />
         </div>
-        <Menu mode="inline">
-          { this.state.menuTreeNode }
-        </Menu>
+        <Menu mode="inline">{this.state.menuTreeNode}</Menu>
       </div>
     )
   }
