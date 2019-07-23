@@ -1,15 +1,16 @@
 import * as React from 'react'
 import { Menu } from 'antd'
+import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import http from '@/http/fetch'
 import './index.less'
 
 const { SubMenu, Item } = Menu
 
-interface ItemMenu {
+export interface ItemMenu {
   id: number
   category_type: number
-  name: string
+  name?: string
+  desc: string
   key?: string
   children?: ItemMenu[]
 }
@@ -18,39 +19,48 @@ interface AsideNavState {
   menuTreeNode?: React.ReactNode[] | React.ReactNode
 }
 
-export default class AsideNav extends React.Component<any, AsideNavState> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      menuTreeNode: null
+type AsideProps = {
+  categoryList: any
+}
+
+type AsideNavProps = Partial<AsideProps>
+
+class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
+  static getDerivedStateFromProps(nextProps: AsideNavProps, prevState: AsideNavState) {
+    if (prevState.menuTreeNode === null && nextProps.categoryList) {
+      let menuList = AsideNav.renderMenu(nextProps.categoryList)
+      return {
+        ...prevState,
+        menuTreeNode: menuList
+      }
     }
+    return null
   }
 
-  componentDidMount() {
-    http.fetch('component.categorys').then(res => {
-      let menuConfig = res.data
-      const menuTreeNode = this.renderMenu(menuConfig)
-      this.setState({
-        menuTreeNode
-      })
-    })
-  }
-
-  renderMenu = (data: ItemMenu[]) => {
+  static renderMenu(data: ItemMenu[]) {
     return data.map(item => {
       if (item.children && item.category_type === 1) {
         return (
-          <SubMenu title={item.name} key={item.id}>
-            {this.renderMenu(item.children)}
+          <SubMenu title={item.desc} key={item.id}>
+            {AsideNav.renderMenu(item.children)}
           </SubMenu>
         )
       }
       return (
         <Item key={item.id}>
-          <NavLink to={`/home${item.key}`}>{item.name}</NavLink>
+          <NavLink to={`/home${item.key}`}>
+            {item.name} {item.desc}
+          </NavLink>
         </Item>
       )
     })
+  }
+
+  constructor(props: AsideNavProps) {
+    super(props)
+    this.state = {
+      menuTreeNode: null
+    }
   }
 
   render() {
@@ -67,3 +77,9 @@ export default class AsideNav extends React.Component<any, AsideNavState> {
     )
   }
 }
+
+const mapStateToProps = (state: any) => ({
+  categoryList: state.components.categoryList
+})
+
+export default connect(mapStateToProps)(AsideNav)

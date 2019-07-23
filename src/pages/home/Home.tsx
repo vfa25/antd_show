@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 import AsideNav from '@/components/AsideNav'
 import './index.less'
 
-export default class Home extends React.Component {
+class Home extends React.Component {
   render() {
     return (
       <Row className="container">
@@ -14,12 +14,12 @@ export default class Home extends React.Component {
         </Col>
         <Col span={20} className="main">
           <Header />
-          <Row className="content">
-            {this.props.children}
-          </Row>
+          <Row className="content">{this.props.children}</Row>
           <Footer />
         </Col>
       </Row>
     )
   }
 }
+
+export default Home

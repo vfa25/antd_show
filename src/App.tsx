@@ -1,11 +1,26 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { hot } from 'react-hot-loader/root'
+import { getCategoryList } from '@/actions/componentAction'
 import AppRouter from './Router'
 
-class App extends React.Component {
+type HomeProps = {
+  getCategoryList: any
+}
+class App extends React.Component<HomeProps> {
+  componentDidMount() {
+    this.props.getCategoryList()
+  }
   render() {
     return <AppRouter />
   }
 }
 
-export default hot(App)
+const mapDispatchToProps = {
+  getCategoryList: getCategoryList
+}
+
+export default connect(
+  undefined,
+  mapDispatchToProps
+)(hot(App))
