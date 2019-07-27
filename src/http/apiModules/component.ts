@@ -12,5 +12,13 @@ export default {
   categorys: {
     url: '/categorys',
     method: 'get'
+  },
+  components: {
+    url: '/components',
+    method: 'get'
+  },
+  search: {
+    url: '/search',
+    method: 'get'
   }
 }

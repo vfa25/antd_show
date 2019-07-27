@@ -12,7 +12,7 @@ export function getCategoryList() {
       .then(res => {
         dispatch({
           type: COMPONENT.GET_CATEGORY_LIST_SUCCESS,
-          categoryList: res.data
+          categoryList: res
         })
       })
       .catch(err => {

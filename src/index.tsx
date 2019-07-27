@@ -10,14 +10,14 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 import './style/layout.less'
 
-declare var window: Window & { devToolsExtension: any }
+// declare var window: Window & { devToolsExtension: any }
 
 export * from 'redux'
 export const store = createStore(
   reducers,
   compose(
-    applyMiddleware(thunk, logger),
-    window.devToolsExtension ? window.devToolsExtension() : () => {}
+    applyMiddleware(thunk, logger)
+    // window.devToolsExtension ? window.devToolsExtension() : () => {}
   )
 )
 

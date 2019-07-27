@@ -2,18 +2,10 @@ import * as React from 'react'
 import { Menu } from 'antd'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
+import { ItemMenu } from '@/types'
 import './index.less'
 
 const { SubMenu, Item } = Menu
-
-export interface ItemMenu {
-  id: number
-  category_type: number
-  name?: string
-  desc: string
-  key?: string
-  children?: ItemMenu[]
-}
 
 interface AsideNavState {
   menuTreeNode?: React.ReactNode[] | React.ReactNode
@@ -39,7 +31,7 @@ class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
 
   static renderMenu(data: ItemMenu[]) {
     return data.map(item => {
-      if (item.children && item.category_type === 1) {
+      if (item.children) {
         return (
           <SubMenu title={item.desc} key={item.id}>
             {AsideNav.renderMenu(item.children)}
@@ -66,12 +58,6 @@ class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
   render() {
     return (
       <div>
-        <div className="logo">
-          <h2>Contrast</h2>
-          <img src="/assets/logo-antd.svg" alt="" />
-          <h2>And</h2>
-          <img className="logo-element" src="/assets/logo-element.svg" alt="" />
-        </div>
         <Menu mode="inline">{this.state.menuTreeNode}</Menu>
       </div>
     )
