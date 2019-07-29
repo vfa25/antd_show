@@ -4,12 +4,13 @@
  * 用于异常捕捉，添加配置。
  */
 
-import axios from 'axios';
-import { notification } from 'antd';
+import axios from 'axios'
+import { notification } from 'antd'
+import { httpCode } from './statusCode'
 
 // 配置 Content-Type。'post', 'put', 'patch'默认都是'application/x-www-form-urlencoded'
 // https://github.com/axios/axios/blob/master/lib/defaults.js   第94行
-axios.defaults.headers.post["Content-Type"] = "aplication/json";
+axios.defaults.headers.post['Content-Type'] = 'aplication/json'
 /**
  * 配置 axios
  */
@@ -28,30 +29,52 @@ axios.defaults.headers.post["Content-Type"] = "aplication/json";
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
-    return config;
+    return config
   },
   err => {
-    return Promise.reject(err);
+    return Promise.reject(err)
   }
-);
+)
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
-    if(response.status === 401){
-      // 401验权失败逻辑
-    }
-    if (response.data.code === 0 && response.data.msg !== -1) {
-      notification.error({
-        message: '系统错误',
-        description: response.data.msg,
-        duration: 2
-      });
-    }
-    return response;
+    console.log(response)
+    // if(response.status === 401){
+    //   // 401验权失败逻辑
+    // }
+    // if (response.data.code === 0 && response.data.msg !== -1) {
+    //   notification.error({
+    //     message: '系统错误',
+    //     description: response.data.msg,
+    //     duration: 5
+    //   });
+    // }
+    return response
   },
   error => {
-    console.log(error);
+    console.dir(error)
+    let errorStr = ''
+    if (error.response) {
+      const { data, status } = error.response
+      if (data && String(data) === '[object Object]') {
+        Object.keys(data).forEach(v => {
+          errorStr += Array.isArray(data[v]) ? data[v].join('\n') : data[v]
+        })
+      } else if (status && httpCode[status]) {
+        errorStr = httpCode[status]
+      } else {
+        errorStr = '未知错误，请联系管理员'
+      }
+    } else {
+      errorStr = '连接超时，请检查您的网络'
+    }
+    notification.error({
+      message: '系统异常',
+      description: errorStr,
+      duration: 5
+    })
+    return Promise.reject(error)
   }
-);
+)
 
-export default axios;
+export default axios

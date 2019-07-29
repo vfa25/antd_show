@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Menu } from 'antd'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import { ItemMenu } from '@/types'
+import { ItemMenu } from '@/utils/types'
 import './index.less'
 
 const { SubMenu, Item } = Menu
@@ -18,7 +18,10 @@ type AsideProps = {
 type AsideNavProps = Partial<AsideProps>
 
 class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
-  static getDerivedStateFromProps(nextProps: AsideNavProps, prevState: AsideNavState) {
+  static getDerivedStateFromProps(
+    nextProps: AsideNavProps,
+    prevState: AsideNavState
+  ) {
     if (prevState.menuTreeNode === null && nextProps.categoryList) {
       let menuList = AsideNav.renderMenu(nextProps.categoryList)
       return {
@@ -33,7 +36,7 @@ class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
     return data.map(item => {
       if (item.children) {
         return (
-          <SubMenu title={item.desc} key={item.id}>
+          <SubMenu title={item.desc} key={String(item.id)}>
             {AsideNav.renderMenu(item.children)}
           </SubMenu>
         )
@@ -56,16 +59,24 @@ class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
   }
 
   render() {
+    const { categoryList } = this.props
     return (
       <div>
-        <Menu mode="inline">{this.state.menuTreeNode}</Menu>
+        {categoryList ? (
+          <Menu
+            mode="inline"
+            defaultOpenKeys={categoryList.map((v: ItemMenu) => String(v.id))}
+          >
+            {this.state.menuTreeNode}
+          </Menu>
+        ) : null}
       </div>
     )
   }
 }
 
 const mapStateToProps = (state: any) => ({
-  categoryList: state.components.categoryList
+  categoryList: state.component.categoryList
 })
 
 export default connect(mapStateToProps)(AsideNav)

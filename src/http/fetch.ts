@@ -3,7 +3,7 @@
  */
 import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import JsonP from 'jsonp'
-import { tuple } from '../utils/type'
+import { tuple, keysMap } from '@/utils/types'
 import axios from './config'
 export * from 'axios'
 
@@ -12,10 +12,8 @@ const Methods = tuple('get', 'post', 'put', 'patch', 'delete', 'head')
 export type Method = (typeof Methods)[number]
 
 // apiModules全量注册
-interface fetchMap<T> {
-  [key: string]: T
-}
-const fetchCfg: fetchMap<any> = {}
+
+const fetchCfg: keysMap<any> = {}
 // @types/webpack-env
 const requireContext = require.context('./apiModules', false, /\.ts$/)
 requireContext.keys().forEach(path => {
@@ -58,6 +56,7 @@ export interface AjaxResponse {
   data?: object | null | Array<any>
   results?: object | null | Array<any>
   message?: string
+  token?: string
 }
 
 class Fetch {
@@ -69,14 +68,20 @@ class Fetch {
    * @param payload 负载
    * @param config http配置
    */
-  fetch(moduleInfo: string, payload?: object, config?: AxiosRequestConfig): AxiosPromise {
+  fetch(
+    moduleInfo: string,
+    payload?: object,
+    config?: AxiosRequestConfig
+  ): AxiosPromise {
     let prefix = ''
     const moduleName = fetchParam(moduleInfo)['moduleName']
     const apiName: string[] = fetchParam(moduleInfo)['apiName'].split('.')
     const id = fetchParam(moduleInfo)['id']
     // 判断没有找到传入模块
     if (!fetchCfg.hasOwnProperty(moduleName)) {
-      throw new Error(`[Error in fetch]: 在api配置文件中未找到模块 -> ${moduleName}`)
+      throw new Error(
+        `[Error in fetch]: 在api配置文件中未找到模块 -> ${moduleName}`
+      )
     }
     // 判断没有找到对应接口
     let item
@@ -87,7 +92,9 @@ class Fetch {
     }
     if (!fetchInfo) {
       throw new Error(
-        `[Error in fetch]: 在模块${moduleName}中未找到接口 -> ${fetchParam(moduleInfo)['apiName']}`
+        `[Error in fetch]: 在模块${moduleName}中未找到接口 -> ${
+          fetchParam(moduleInfo)['apiName']
+        }`
       )
     } else if (!fetchInfo.url || !fetchInfo.method) {
       throw new Error(
@@ -105,11 +112,13 @@ class Fetch {
     url = `${prefix}/${url}`
 
     if (method === 'get') {
-      return axios['get'](url, { ...config, params: payload }).then(res => res.data)
+      return axios['get'](url, { ...config, params: payload }).then(
+        res => res.data
+      )
     } else if (method === 'post' || method === 'put' || method === 'patch') {
-      return axios[method](url, payload, config)
+      return axios[method](url, payload, config).then(res => res.data)
     } else {
-      return axios[method](url, config)
+      return axios[method](url, config).then(res => res.data)
     }
   }
 

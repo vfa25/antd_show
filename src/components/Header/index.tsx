@@ -1,5 +1,6 @@
 import React from 'react'
 import { Row, Col } from 'antd'
+import { NavLink } from 'react-router-dom'
 import './index.less'
 
 export default class Header extends React.Component {
@@ -8,10 +9,16 @@ export default class Header extends React.Component {
       <div className="header">
         <Row className="header-top">
           <Col span={4} className="logo">
-            <h2>Contrast</h2>
-            <img src="/assets/logo-antd.svg" alt="" />
-            <h2>And</h2>
-            <img className="logo-element" src="/assets/logo-element.svg" alt="" />
+            <NavLink to="/home/components">
+              <h2>Contrast</h2>
+              <img src="/assets/logo-antd.svg" alt="" />
+              <h2>And</h2>
+              <img
+                className="logo-element"
+                src="/assets/logo-element.svg"
+                alt=""
+              />
+            </NavLink>
           </Col>
           <Col span={6} offset={2}>
             {this.props.children}

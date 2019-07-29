@@ -1,6 +1,6 @@
 import { COMPONENT } from '../constants'
 
-export type actionType = {
+export type componentType = {
   categoryList?: any
   type: string
   message: string
@@ -11,7 +11,7 @@ const initState = {
   message: ''
 }
 
-export default function components(state = initState, action: actionType) {
+export default function component(state = initState, action: componentType) {
   switch (action.type) {
     case COMPONENT.GET_CATEGORY_LIST_REQUEST:
       return { ...state, categoryList: null }

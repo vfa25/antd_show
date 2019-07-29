@@ -6,6 +6,7 @@
     "@babel/core": "7.4.3",
     "@svgr/webpack": "4.1.0",
     "@types/jest": "24.0.15",
+    "@types/js-cookie": "^2.2.2",
     "@types/jsonp": "^0.2.0",
     "@types/lodash": "^4.14.136",
     "@types/node": "12.6.2",
@@ -41,6 +42,7 @@
     "jest-environment-jsdom-fourteen": "0.1.0",
     "jest-resolve": "24.7.1",
     "jest-watch-typeahead": "0.3.0",
+    "js-cookie": "^2.2.0",
     "jsonp": "^0.2.1",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
@@ -181,7 +183,8 @@
   },
   "prettier": {
     "semi": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "printWidth": 80
   },
   "proxy": "http://localhost:8000"
 }

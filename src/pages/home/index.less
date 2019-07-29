@@ -2,12 +2,12 @@
 
 .container {
   .nav-left {
-    height: calc(100vh);
-    overflow-y: hidden;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
   }
   .main {
     background: @color-gray-bgc;
-    height: calc(100vh);
+    height: calc(100vh - 60px);
     overflow: auto;
   }
   .content {
@@ -36,8 +36,15 @@
 }
 .spinwrap {
   text-align: center;
-  border-radius: 4px;
-  margin-bottom: 20px;
   padding: 30px 50px;
   margin: 20px 0;
+}
+.dropdown-root {
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid @color-gray-text;
+  &:before {
+    top: 0;
+    bottom: 0;
+  }
 }

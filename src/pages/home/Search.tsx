@@ -1,14 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react'
-import { Icon, Input, AutoComplete, Dropdown, Empty, Menu, Spin } from 'antd'
+import { Icon, Input, Dropdown, Empty, Menu, Spin } from 'antd'
 import _ from 'lodash'
 import { NavLink } from 'react-router-dom'
 import http, { AjaxResponse, Canceler } from '@/http/fetch'
-import { ItemMenu } from '@/types'
+import { ItemMenu } from '@/utils/types'
 
 const CancelToken = http.axios.CancelToken
-
-const { Option, OptGroup } = AutoComplete
 
 interface SearchState {
   dataSource: React.ReactNode[] | React.ReactNode
@@ -88,14 +85,13 @@ export default class Search extends React.Component<any, SearchState> {
     })
   }
 
-  handleMenuClick() {
-    console.log('click')
-  }
-
   render() {
     const overlayContent = this.state.loading ? spin : this.state.dataSource
     return (
-      <Dropdown overlay={<Menu>{overlayContent}</Menu>}>
+      <Dropdown
+        overlay={<Menu>{overlayContent}</Menu>}
+        overlayClassName="dropdown-root"
+      >
         <Input
           ref={ref => {
             this.searchInput = ref
