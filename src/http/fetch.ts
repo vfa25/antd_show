@@ -3,6 +3,7 @@
  */
 import { AxiosPromise, AxiosRequestConfig } from 'axios'
 import JsonP from 'jsonp'
+import { notification } from 'antd'
 import { tuple, keysMap } from '@/utils/types'
 import axios from './config'
 export * from 'axios'
@@ -71,7 +72,8 @@ class Fetch {
   fetch(
     moduleInfo: string,
     payload?: object,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    successTip?: string
   ): AxiosPromise {
     let prefix = ''
     const moduleName = fetchParam(moduleInfo)['moduleName']
@@ -116,9 +118,33 @@ class Fetch {
         res => res.data
       )
     } else if (method === 'post' || method === 'put' || method === 'patch') {
-      return axios[method](url, payload, config).then(res => res.data)
+      return axios[method](url, payload, config).then(res => {
+        let defaultTip = '操作成功'
+        if (res.status === 201 && res.config.method) {
+          if (/post/i.test(res.config.method)) {
+            defaultTip = '创建成功'
+          } else {
+            defaultTip = '修改成功'
+          }
+        }
+        notification.success({
+          message: successTip || defaultTip,
+          duration: 5
+        })
+        return res.data
+      })
     } else {
-      return axios[method](url, config).then(res => res.data)
+      return axios[method](url, config).then(res => {
+        let defaultTip = '操作成功'
+        if (res.status === 204) {
+          defaultTip = '删除成功'
+        }
+        notification.success({
+          message: successTip || defaultTip,
+          duration: 5
+        })
+        return res.data
+      })
     }
   }
 

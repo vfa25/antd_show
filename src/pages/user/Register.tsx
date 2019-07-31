@@ -1,18 +1,48 @@
 import * as React from 'react'
-import { Form, Input, Button, message, Icon, Checkbox } from 'antd'
+import { Form, Input, Button, Icon, Row, Col } from 'antd'
+import { connect } from 'react-redux'
 import { FormComponentProps } from 'antd/es/form'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
+import http, { AjaxResponse } from '@/http/fetch'
+import { setUserInfo } from '@/actions/userActions'
+import { formErrHandle } from '@/utils/common'
 import './index.less'
 
 const { Item } = Form
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mobileReg = /^1[358]\d{9}$|^147\d{8}$|^176\d{8}$/
 
-type FromsPropsType = FormComponentProps
+type storeProps = {
+  setUserInfo: any
+}
+
+type FromsPropsType = FormComponentProps & RouteComponentProps & storeProps
 
 class Register extends React.Component<FromsPropsType> {
+  getCaptcha = () => {
+    this.props.form.validateFields(['mobile'], (err, values) => {
+      if (!err) {
+        http
+          .fetch('user.smscode', { mobile: values.mobile })
+          .then((res: AjaxResponse) => {
+            console.log(res)
+          })
+      }
+    })
+  }
+
   submit = () => {
-    // const userInfo = this.props.form.getFieldsValue()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        message.success(`${values.username}`)
+        http
+          .fetch('user.register.mobile', values)
+          .then((res: AjaxResponse) => {})
+          .catch(err => {
+            if (String(err.data) === '[object Object]') {
+              console.log(formErrHandle(err.data))
+              this.props.form.setFields(formErrHandle(err.data))
+            }
+          })
       }
     })
   }
@@ -21,44 +51,56 @@ class Register extends React.Component<FromsPropsType> {
     return (
       <Form layout="horizontal" className="width-300">
         <Item>
-          {getFieldDecorator('username', {
+          {getFieldDecorator('mobile', {
             initialValue: '',
             rules: [
-              { required: true, message: '用户名不能为空' },
-              { pattern: /^\w+$/g, message: '用户名仅能是字母或数字' }
+              { required: true, message: '手机号不可为空' },
+              { pattern: mobileReg, message: '请输入11位格式正确的手机号' }
             ]
           })(
-            <Input prefix={<Icon type="user" />} placeholder="请输入用户名" />
+            <Input
+              prefix={<Icon type="phone" />}
+              placeholder="请输入您的手机号"
+            />
           )}
+        </Item>
+        <Item extra="请获取并输入手机短信验证码后提交注册">
+          <Row gutter={8}>
+            <Col span={13}>
+              {getFieldDecorator('captcha', {
+                rules: [
+                  { required: true, message: '请输入您收到的短信验证码!' }
+                ]
+              })(
+                <Input
+                  prefix={<Icon type="code" />}
+                  placeholder="请输入手机验证码"
+                />
+              )}
+            </Col>
+            <Col span={11} onClick={this.getCaptcha}>
+              <Button>免费获取验证码</Button>
+            </Col>
+          </Row>
         </Item>
         <Item>
           {getFieldDecorator('password', {
             initialValue: '',
             rules: [
               { required: true, message: '密码不能为空' },
-              { min: 6, message: '密码长度应不小于6' }
+              { pattern: /^\w+$/g, message: '密码仅能包含字母或数字' },
+              { min: 6, max: 20, message: '请输入6-20位长度的密码' }
             ]
           })(
             <Input
               prefix={<Icon type="lock" />}
               type="password"
-              placeholder="请输入密码"
+              placeholder="请输入6-20位由字母或数字组成的密码"
             />
           )}
         </Item>
         <Item>
-          {getFieldDecorator('remember', {
-            valuePropName: 'checked',
-            initialValue: true
-          })(<Checkbox>记住密码</Checkbox>)}
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a href="#" className="float-right">
-            {' '}
-            忘记密码
-          </a>
-        </Item>
-        <Item>
-          <Button type="primary" onClick={this.submit}>
+          <Button type="primary" block onClick={this.submit}>
             注册
           </Button>
         </Item>
@@ -67,4 +109,15 @@ class Register extends React.Component<FromsPropsType> {
   }
 }
 
-export default Form.create()(Register)
+const mapDispatchToProps = {
+  setUserInfo
+}
+
+const FormRegister: React.ComponentType<any> = Form.create()(Register)
+
+const connectRegister: React.ComponentType<any> = connect(
+  undefined,
+  mapDispatchToProps
+)(FormRegister)
+
+export default withRouter(connectRegister)

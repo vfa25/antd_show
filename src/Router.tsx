@@ -36,7 +36,11 @@ class AppRouter extends React.Component<RouterProps> {
                 <Route path="/home/components" component={Content} exact />
                 {routes.map((v: { key: string; name: React.ReactText }) =>
                   ({}.hasOwnProperty.call(ui, v.name) ? (
-                    <Route path={`/home${v.key}`} component={ui[v.name]} />
+                    <Route
+                      path={`/home${v.key}`}
+                      component={ui[v.name]}
+                      key={v.key}
+                    />
                   ) : null)
                 )}
                 <Route component={Nomatch} />

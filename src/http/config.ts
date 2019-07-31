@@ -38,10 +38,6 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
-    console.log(response)
-    // if(response.status === 401){
-    //   // 401验权失败逻辑
-    // }
     // if (response.data.code === 0 && response.data.msg !== -1) {
     //   notification.error({
     //     message: '系统错误',
@@ -52,28 +48,34 @@ axios.interceptors.response.use(
     return response
   },
   error => {
-    console.dir(error)
-    let errorStr = ''
+    let errorTitle = ''
+    let errorDesc = ''
     if (error.response) {
       const { data, status } = error.response
       if (data && String(data) === '[object Object]') {
         Object.keys(data).forEach(v => {
-          errorStr += Array.isArray(data[v]) ? data[v].join('\n') : data[v]
+          if (!Array.isArray(data[v])) {
+            errorDesc += data[v]
+          }
+          // errorDesc += Array.isArray(data[v]) ? data[v].join('\n') : data[v]
         })
-      } else if (status && httpCode[status]) {
-        errorStr = httpCode[status]
-      } else {
-        errorStr = '未知错误，请联系管理员'
       }
-    } else {
-      errorStr = '连接超时，请检查您的网络'
+      if (status && httpCode[status]) {
+        errorTitle = httpCode[status]
+      } else {
+        errorTitle = '系统异常，请联系管理员'
+      }
+      notification.error({
+        message: errorTitle,
+        description: errorDesc,
+        duration: 5
+      })
+      return Promise.reject(error.response)
     }
     notification.error({
-      message: '系统异常',
-      description: errorStr,
+      message: '连接超时，请检查您的网络',
       duration: 5
     })
-    return Promise.reject(error)
   }
 )
 
