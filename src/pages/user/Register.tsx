@@ -1,9 +1,10 @@
 import * as React from 'react'
+import * as Cookies from 'js-cookie'
 import { Form, Input, Button, Icon, Row, Col } from 'antd'
 import { connect } from 'react-redux'
 import { FormComponentProps } from 'antd/es/form'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import http, { AjaxResponse } from '@/http/fetch'
+import http from '@/http/fetch'
 import { setUserInfo } from '@/actions/userActions'
 import { formErrHandle } from '@/utils/common'
 import './index.less'
@@ -22,11 +23,9 @@ class Register extends React.Component<FromsPropsType> {
   getCaptcha = () => {
     this.props.form.validateFields(['mobile'], (err, values) => {
       if (!err) {
-        http
-          .fetch('user.smscode', { mobile: values.mobile })
-          .then((res: AjaxResponse) => {
-            console.log(res)
-          })
+        http.fetch('user.smscode', { mobile: values.mobile }).then(res => {
+          console.log(res)
+        })
       }
     })
   }
@@ -36,11 +35,15 @@ class Register extends React.Component<FromsPropsType> {
       if (!err) {
         http
           .fetch('user.register.mobile', values)
-          .then((res: AjaxResponse) => {})
+          .then(res => {
+            Cookies.set('username', res.name!, { expires: 7 })
+            Cookies.set('token', res.token, { expires: 7 })
+            this.props.setUserInfo()
+            this.props.history.replace('/home')
+          })
           .catch(err => {
             if (String(err.data) === '[object Object]') {
-              console.log(formErrHandle(err.data))
-              this.props.form.setFields(formErrHandle(err.data))
+              this.props.form.setFields(formErrHandle(values, err.data))
             }
           })
       }
@@ -67,7 +70,7 @@ class Register extends React.Component<FromsPropsType> {
         <Item extra="请获取并输入手机短信验证码后提交注册">
           <Row gutter={8}>
             <Col span={13}>
-              {getFieldDecorator('captcha', {
+              {getFieldDecorator('smscode', {
                 rules: [
                   { required: true, message: '请输入您收到的短信验证码!' }
                 ]
@@ -101,7 +104,7 @@ class Register extends React.Component<FromsPropsType> {
         </Item>
         <Item>
           <Button type="primary" block onClick={this.submit}>
-            注册
+            注册并登陆
           </Button>
         </Item>
       </Form>

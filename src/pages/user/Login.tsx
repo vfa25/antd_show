@@ -4,8 +4,9 @@ import { Form, Input, Button, Icon } from 'antd'
 import { connect } from 'react-redux'
 import { FormComponentProps } from 'antd/es/form'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import http, { AjaxResponse } from '@/http/fetch'
+import http from '@/http/fetch'
 import { setUserInfo } from '@/actions/userActions'
+import { formErrHandle } from '@/utils/common'
 import './index.less'
 
 const { Item } = Form
@@ -20,12 +21,19 @@ class Login extends React.Component<FromsPropsType> {
   submit = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        http.fetch('user.login', values).then((res: AjaxResponse) => {
-          Cookies.set('username', values.username, { expires: 7 })
-          Cookies.set('token', res.token!, { expires: 7 })
-          this.props.setUserInfo()
-          this.props.history.replace('/home')
-        })
+        http
+          .fetch('user.login', values)
+          .then(res => {
+            Cookies.set('username', values.username, { expires: 7 })
+            Cookies.set('token', res.token, { expires: 7 })
+            this.props.setUserInfo()
+            this.props.history.replace('/home')
+          })
+          .catch(err => {
+            if (String(err.data) === '[object Object]') {
+              this.props.form.setFields(formErrHandle(values, err.data))
+            }
+          })
       }
     })
   }

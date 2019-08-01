@@ -1,7 +1,7 @@
 /**
  * axios封装
  */
-import { AxiosPromise, AxiosRequestConfig } from 'axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import JsonP from 'jsonp'
 import { notification } from 'antd'
 import { tuple, keysMap } from '@/utils/types'
@@ -52,13 +52,21 @@ type jsonpOptions = {
   url: string
 }
 
-export interface AjaxResponse {
+interface LoginOrRegisterResponse {
+  name?: string
+  token: string
+}
+
+interface NormalResponse {
   code?: number
   data?: object | null | Array<any>
   results?: object | null | Array<any>
   message?: string
-  token?: string
 }
+
+type FetchResponseData = LoginOrRegisterResponse & NormalResponse
+
+export type FetchResponse = AxiosResponse<FetchResponseData>
 
 class Fetch {
   axios = axios
@@ -74,7 +82,7 @@ class Fetch {
     payload?: object,
     config?: AxiosRequestConfig,
     successTip?: string
-  ): AxiosPromise {
+  ) {
     let prefix = ''
     const moduleName = fetchParam(moduleInfo)['moduleName']
     const apiName: string[] = fetchParam(moduleInfo)['apiName'].split('.')
@@ -115,36 +123,41 @@ class Fetch {
 
     if (method === 'get') {
       return axios['get'](url, { ...config, params: payload }).then(
-        res => res.data
+        (res: FetchResponse): FetchResponseData => res.data
       )
     } else if (method === 'post' || method === 'put' || method === 'patch') {
-      return axios[method](url, payload, config).then(res => {
-        let defaultTip = '操作成功'
-        if (res.status === 201 && res.config.method) {
-          if (/post/i.test(res.config.method)) {
+      return axios[method](url, payload, config).then(
+        (res: FetchResponse): FetchResponseData => {
+          let defaultTip = '操作成功'
+          if (res.status === 201 && /post/i.test(res.config.method || '')) {
             defaultTip = '创建成功'
-          } else {
+          } else if (
+            res.status === 200 &&
+            /(put)|(patch)/i.test(res.config.method || '')
+          ) {
             defaultTip = '修改成功'
           }
+          notification.success({
+            message: successTip || defaultTip,
+            duration: 5
+          })
+          return res.data
         }
-        notification.success({
-          message: successTip || defaultTip,
-          duration: 5
-        })
-        return res.data
-      })
+      )
     } else {
-      return axios[method](url, config).then(res => {
-        let defaultTip = '操作成功'
-        if (res.status === 204) {
-          defaultTip = '删除成功'
+      return axios[method](url, config).then(
+        (res: FetchResponse): FetchResponseData => {
+          let defaultTip = '操作成功'
+          if (res.status === 204) {
+            defaultTip = '删除成功'
+          }
+          notification.success({
+            message: successTip || defaultTip,
+            duration: 5
+          })
+          return res.data
         }
-        notification.success({
-          message: successTip || defaultTip,
-          duration: 5
-        })
-        return res.data
-      })
+      )
     }
   }
 

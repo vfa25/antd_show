@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Icon, Input, Dropdown, Empty, Menu, Spin } from 'antd'
 import _ from 'lodash'
 import { NavLink } from 'react-router-dom'
-import http, { AjaxResponse, Canceler } from '@/http/fetch'
+import http, { Canceler } from '@/http/fetch'
 import { ItemMenu } from '@/utils/types'
 
 const CancelToken = http.axios.CancelToken
@@ -52,7 +52,7 @@ export default class Search extends React.Component<any, SearchState> {
           })
         }
       )
-      .then((res: AjaxResponse) => {
+      .then(res => {
         this.renderOptions(res)
       })
       .catch(err => {
