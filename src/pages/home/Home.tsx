@@ -8,38 +8,38 @@ import { getCategoryList } from '@/actions/componentAction'
 import Search from './Search'
 import './index.less'
 
-type HomeProps = {
-  getCategoryList: any
+interface HomeProps {
+    getCategoryList: any
 }
 class Home extends React.Component<HomeProps> {
-  componentDidMount() {
-    this.props.getCategoryList()
-  }
-  render() {
-    return (
-      <Row className="container">
-        <Col span={24}>
-          <Header>
-            <Search />
-          </Header>
-        </Col>
-        <Col span={4} className="nav-left">
-          <AsideNav />
-        </Col>
-        <Col span={20} className="main">
-          <Row className="content">{this.props.children}</Row>
-          <Footer />
-        </Col>
-      </Row>
-    )
-  }
+    componentDidMount() {
+        this.props.getCategoryList()
+    }
+    render() {
+        return (
+            <Row className="container">
+                <Col span={24}>
+                    <Header>
+                        <Search />
+                    </Header>
+                </Col>
+                <Col span={4} className="nav-left">
+                    <AsideNav />
+                </Col>
+                <Col span={20} className="main">
+                    <Row className="content">{this.props.children}</Row>
+                    <Footer />
+                </Col>
+            </Row>
+        )
+    }
 }
 
 const mapDispatchToProps = {
-  getCategoryList
+    getCategoryList
 }
 
 export default connect(
-  undefined,
-  mapDispatchToProps
+    undefined,
+    mapDispatchToProps
 )(Home)

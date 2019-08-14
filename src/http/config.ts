@@ -28,55 +28,55 @@ axios.defaults.headers.post['Content-Type'] = 'aplication/json'
  */
 // http request 拦截器
 axios.interceptors.request.use(
-  config => {
-    return config
-  },
-  err => {
-    return Promise.reject(err)
-  }
+    config => {
+        return config
+    },
+    err => {
+        return Promise.reject(err)
+    }
 )
 // http response 拦截器
 axios.interceptors.response.use(
-  response => {
-    // if (response.data.code === 0 && response.data.msg !== -1) {
-    //   notification.error({
-    //     message: '系统错误',
-    //     description: response.data.msg,
-    //     duration: 5
-    //   });
-    // }
-    return response
-  },
-  error => {
-    let errorTitle = ''
-    let errorDesc = ''
-    if (error.response) {
-      const { data, status } = error.response
-      if (data && String(data) === '[object Object]') {
-        Object.keys(data).forEach(v => {
-          if (!Array.isArray(data[v])) {
-            errorDesc += data[v]
-          }
-          // errorDesc += Array.isArray(data[v]) ? data[v].join('\n') : data[v]
+    response => {
+        // if (response.data.code === 0 && response.data.msg !== -1) {
+        //   notification.error({
+        //     message: '系统错误',
+        //     description: response.data.msg,
+        //     duration: 5
+        //   });
+        // }
+        return response
+    },
+    error => {
+        let errorTitle = ''
+        let errorDesc = ''
+        if (error.response) {
+            const { data, status } = error.response
+            if (data && String(data) === '[object Object]') {
+                Object.keys(data).forEach(v => {
+                    if (!Array.isArray(data[v])) {
+                        errorDesc += data[v]
+                    }
+                    // errorDesc += Array.isArray(data[v]) ? data[v].join('\n') : data[v]
+                })
+            }
+            if (status && httpCode[status]) {
+                errorTitle = httpCode[status]
+            } else {
+                errorTitle = '系统异常，请联系管理员'
+            }
+            notification.error({
+                message: errorTitle,
+                description: errorDesc,
+                duration: 5
+            })
+            return Promise.reject(error.response)
+        }
+        notification.error({
+            message: '连接超时，请检查您的网络',
+            duration: 5
         })
-      }
-      if (status && httpCode[status]) {
-        errorTitle = httpCode[status]
-      } else {
-        errorTitle = '系统异常，请联系管理员'
-      }
-      notification.error({
-        message: errorTitle,
-        description: errorDesc,
-        duration: 5
-      })
-      return Promise.reject(error.response)
     }
-    notification.error({
-      message: '连接超时，请检查您的网络',
-      duration: 5
-    })
-  }
 )
 
 export default axios

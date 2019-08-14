@@ -1,8 +1,8 @@
-# 从Antd到Element
+# Antd 主页展示
 
 ## 简介
 
-这是一个学习项目。会去对比[ant-design](https://github.com/ant-design/ant-design) 和 [element](https://github.com/ElemeFE/element)。
+这是一个学习项目。fork from [ant-design](https://github.com/ant-design/ant-design) 。
 
 ## 搭建
 

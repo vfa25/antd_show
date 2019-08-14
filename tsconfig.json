@@ -20,7 +20,8 @@
     "noEmit": true,
     "jsx": "preserve",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "enterprise-antd/*": ["/Users/a/Desktop/ts_hooks_antd/components/*"]
     }
   },
   "include": [

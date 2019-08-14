@@ -3,29 +3,29 @@
 export const tuple = <T extends string[]>(...args: T) => args
 
 //映射
-export interface keysMap<T> {
-  [key: string]: T
+export interface KeysMap<T> {
+    [key: string]: T
 }
 
 // 链表
 export type LinkedList<T> = T & { next: LinkedList<T> }
 
 //映射链
-export type keyMapLink<T> = keysMap<T> & keysMap<keysMap<T>>
+export type keyMapLink<T> = KeysMap<T> & KeysMap<KeysMap<T>>
 
 export interface ItemMenu {
-  id: number
-  category_type: number
-  name?: string
-  desc: string
-  key?: string
-  children?: (ItemMenu & ItemDetail)[]
+    id: number
+    category_type: number
+    name?: string
+    desc: string
+    key?: string
+    children?: (ItemMenu & ItemDetail)[]
 }
 
 export interface ItemDetail {
-  component_code: string
-  name: string
-  easy_to_use: number
-  component_brief: string
-  id: number
+    component_code: string
+    name: string
+    easy_to_use: number
+    component_brief: string
+    id: number
 }

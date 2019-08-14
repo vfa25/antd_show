@@ -1,12 +1,12 @@
-import { keysMap } from '@/utils/types'
+import { KeysMap } from '@/utils/types'
 
-export const httpCode: keysMap<any> = {
-  '400': '您的请求有些问题',
-  '401': '您的请求认证失败，请重新登录',
-  '403': '不允许访问该资源吖',
-  '404': '没有找到请求资源哦',
-  '500': '貌似，服务器内部资源出故障了',
-  '503': '抱歉，现在我在忙，请稍后再试'
+export const httpCode: KeysMap<any> = {
+    '400': '您的请求有些问题',
+    '401': '您的请求认证失败，请重新登录',
+    '403': '不允许访问该资源吖',
+    '404': '没有找到请求资源哦',
+    '500': '貌似，服务器内部资源出故障了',
+    '503': '抱歉，现在我在忙，请稍后再试'
 }
 // HTTP_400_BAD_REQUEST = 400
 // HTTP_401_UNAUTHORIZED = 401

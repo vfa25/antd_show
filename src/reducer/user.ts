@@ -1,19 +1,20 @@
 import { USER } from '../constants'
 
-export type userType = {
-  userInfo?: object
-  type: string
+export interface UserType {
+    userInfo?: object
+    type: string
 }
 
 const initState = {
-  userInfo: {}
+    userInfo: {}
 }
 
-export default function user(state = initState, action: userType) {
-  switch (action.type) {
-    case USER.SET_USERINFO:
-      return { ...state, userInfo: action.userInfo! }
-    default:
-      return state
-  }
+export default function user(state = initState, action: UserType) {
+    switch (action.type) {
+        case USER.SET_USERINFO:
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return { ...state, userInfo: action.userInfo! }
+        default:
+            return state
+    }
 }
