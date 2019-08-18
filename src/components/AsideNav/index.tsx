@@ -78,7 +78,9 @@ class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
 }
 
 const mapStateToProps = (state: any) => ({
-    categoryList: state.component.categoryList
+    categoryList:
+        state.getIn(['component', 'categoryList']) &&
+        state.getIn(['component', 'categoryList']).toJS()
 })
 
 export default connect(mapStateToProps)(AsideNav)

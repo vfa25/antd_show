@@ -1,6 +1,6 @@
 import React from 'react'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Router, Switch, Route } from 'react-router-dom'
+import { Redirect, Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import User from './pages/user'
 import Home from './pages/home/Home'
@@ -27,12 +27,20 @@ class AppRouter extends React.Component<RouterProps> {
         )
         return (
             <div>
+                <Route
+                    path="/"
+                    exact
+                    render={() => <Redirect to="/home" />}
+                    key="/"
+                />
+                ,
                 <Route path="/login" component={User} />
                 <Route
                     path="/home"
                     render={() => (
                         <Home>
                             <Switch>
+                                <Route path="/home" component={Content} exact />
                                 <Route
                                     path="/home/components"
                                     component={Content}
@@ -63,7 +71,9 @@ class AppRouter extends React.Component<RouterProps> {
 }
 
 const mapStateToProps = (state: any) => ({
-    categoryList: state.component.categoryList
+    categoryList:
+        state.getIn(['component', 'categoryList']) &&
+        state.getIn(['component', 'categoryList']).toJS()
 })
 
 export default connect(mapStateToProps)(AppRouter)

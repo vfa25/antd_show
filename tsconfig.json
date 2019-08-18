@@ -21,7 +21,7 @@
     "jsx": "preserve",
     "paths": {
       "@/*": ["./*"],
-      "enterprise-antd/*": ["/Users/a/Desktop/ts_hooks_antd/components/*"]
+      "enterprise/*": ["../../ts_hooks_antd/*"]
     }
   },
   "include": [

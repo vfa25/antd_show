@@ -1,3 +1,4 @@
+import { fromJS } from 'immutable'
 import * as Cookies from 'js-cookie'
 import { store } from '../index'
 import { USER } from '../constants'
@@ -7,9 +8,9 @@ export function setUserInfo() {
     const token = Cookies.get('token')
     return store.dispatch({
         type: USER.SET_USERINFO,
-        userInfo: {
+        userInfo: fromJS({
             username,
             token
-        }
+        })
     })
 }

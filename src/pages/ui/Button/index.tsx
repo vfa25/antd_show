@@ -1,6 +1,6 @@
 import React from 'react'
-import { Card, Button, Icon, Radio } from 'antd'
-import { ButtonSize } from 'antd/es/button'
+import { Card, Icon, Radio } from 'antd'
+import { default as Button, ButtonSize } from 'enterprise/es/button'
 import './index.less'
 
 interface ButtonsState {

@@ -1,3 +1,4 @@
+import { fromJS } from 'immutable'
 import { COMPONENT } from '../constants'
 
 export interface ComponentType {
@@ -6,19 +7,19 @@ export interface ComponentType {
     message: string
 }
 
-const initState = {
+const initState = fromJS({
     categoryList: null,
     message: ''
-}
+})
 
 export default function component(state = initState, action: ComponentType) {
     switch (action.type) {
         case COMPONENT.GET_CATEGORY_LIST_REQUEST:
-            return { ...state, categoryList: null }
+            return state.set('categoryList', null)
         case COMPONENT.GET_CATEGORY_LIST_SUCCESS:
-            return { ...state, categoryList: action.categoryList }
+            return state.set('categoryList', action.categoryList)
         case COMPONENT.GET_CATEGORY_LIST_FAIL:
-            return { ...state, message: action.message }
+            return state.set('message', action.message)
         default:
             return state
     }

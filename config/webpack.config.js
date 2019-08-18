@@ -259,7 +259,7 @@ module.exports = function(webpackEnv) {
       // We placed these paths second because we want `node_modules` to "win"
       // if there are any conflicts. This matches Node resolution mechanism.
       // https://github.com/facebook/create-react-app/issues/253
-      modules: ['node_modules', paths.appNodeModules].concat(
+      modules: [path.resolve(__dirname, '../node_modules'), 'node_modules', paths.appNodeModules].concat(
         modules.additionalModulePaths || []
       ),
       // These are the reasonable defaults supported by the Node ecosystem.
@@ -277,6 +277,7 @@ module.exports = function(webpackEnv) {
         'react-native': 'react-native-web',
         '@': path.join(__dirname, '../src'),
         'react-dom': '@hot-loader/react-dom',
+        "enterprise": "/Users/a/Desktop/ts_hooks_antd"
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -287,7 +288,7 @@ module.exports = function(webpackEnv) {
         // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
         // please link the files into your node_modules/ and let module-resolution kick in.
         // Make sure your source files are compiled, as they will not be processed in any way.
-        new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+        // new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
       ],
     },
     resolveLoader: {
