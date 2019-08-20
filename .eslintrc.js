@@ -24,7 +24,8 @@ module.exports = {
         'jsx-control-statements/jsx-control-statements': true
     },
     globals: {
-        $: true
+        $: true,
+        Markdown: true
     },
     // 配置自定义规则
     rules: {
@@ -46,7 +47,7 @@ module.exports = {
         'eqeqeq': ['warn', 'always'],
         // React相关校验规则
         'react/jsx-indent': [2, 4],
-        'react/jsx-no-undef': [2, {
+        'react/jsx-no-undef': [1, {
             allowGlobals: true
         }],
         'jsx-control-statements/jsx-use-if-tag': 0

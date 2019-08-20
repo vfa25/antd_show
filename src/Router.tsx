@@ -6,7 +6,7 @@ import User from './pages/user'
 import Home from './pages/home/Home'
 import Detail from './pages/detail/Detail'
 import Nomatch from './pages/Nomatch'
-import Content from './pages/ui/Content'
+import Content from './pages/home/Content'
 import * as UIComponents from './pages/ui'
 
 interface UiType<T> {
@@ -33,7 +33,6 @@ class AppRouter extends React.Component<RouterProps> {
                     render={() => <Redirect to="/home" />}
                     key="/"
                 />
-                ,
                 <Route path="/login" component={User} />
                 <Route
                     path="/home"

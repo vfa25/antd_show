@@ -1,4 +1,4 @@
-@import '../../style/index';
+@import '../../assets/common.less';
 
 .container {
   .nav-left {
@@ -6,7 +6,7 @@
     overflow-y: auto;
   }
   .main {
-    background: @color-gray-bgc;
+    background: @normal-background-color;
     height: calc(100vh - 60px);
     overflow: auto;
   }
@@ -18,14 +18,11 @@
 
 .home-wrap {
   height: calc(60vh);
-  background-color: @color-white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
+  background-color: @common-white;
+  padding: 20px;
 }
 .search-title {
-  color: @color-main;
+  color: @theme-color;
   margin-right: 5px;
   height: 100%;
 }
@@ -42,7 +39,7 @@
 .dropdown-root {
   max-height: 600px;
   overflow-y: auto;
-  border: 1px solid @color-gray-text;
+  border: 1px solid @font-color-gray;
   &:before {
     top: 0;
     bottom: 0;

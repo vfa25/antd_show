@@ -8,7 +8,7 @@ import logger from 'redux-logger'
 import reducers from './reducer'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-import './style/layout.less'
+import './assets/global-class.less'
 
 declare var window: Window & { __REDUX_DEVTOOLS_EXTENSION__: any }
 
