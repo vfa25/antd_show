@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Icon, Radio } from 'antd'
-import { default as Button, ButtonSize } from 'enterprise/es/button'
+import { default as Button, ButtonSize } from 'enterprise-antd/es/button'
 import button from './button.md'
 // import Markdown from '@/components/Markdown'
 import './index.less'

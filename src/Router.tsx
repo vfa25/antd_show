@@ -1,11 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import { Redirect, Switch, Route, RouteProps } from 'react-router-dom'
 import { connect } from 'react-redux'
-import User from './pages/user'
 import Home from './pages/home/Home'
-import Detail from './pages/detail/Detail'
-import Nomatch from './baseUI/Nomatch'
-import Content from './pages/home/Content'
 import allComponents from './pages/ui/index.md'
 
 const ui: React.ReactText[] = allComponents.trim().split(/[\t\n]+/)
@@ -18,6 +14,22 @@ interface ConfigItem {
     name: React.ReactText
 }
 class AppRouter extends React.Component<RouterProps> {
+    lazyRoute(relativePath: string) {
+        const Component = lazy(() =>
+            import(
+                /* webpackChunkName: "[request]" */
+                `./pages/${relativePath}`
+            )
+        )
+        const ComponentWrap = (props: RouteProps) => {
+            return (
+                <Suspense fallback={null}>
+                    <Component {...props} />
+                </Suspense>
+            )
+        }
+        return ComponentWrap
+    }
     routeComponents() {
         const categoryList = this.props.categoryList || []
         const routes = categoryList.reduce(
@@ -27,23 +39,10 @@ class AppRouter extends React.Component<RouterProps> {
         )
         const result = routes.map((v: ConfigItem) => {
             if (!ui.includes(v.name)) return null
-            const Component = lazy(() =>
-                import(
-                    /* webpackChunkName: "[request]" */
-                    `./pages/ui/${v.name}/index`
-                )
-            )
-            const ComponentWrap = (props: RouteProps) => {
-                return (
-                    <Suspense fallback={null}>
-                        <Component {...props} />
-                    </Suspense>
-                )
-            }
             return (
                 <Route
                     path={`/home${v.key}`}
-                    component={ComponentWrap}
+                    component={this.lazyRoute(`ui/${v.name}`)}
                     key={v.key}
                 />
             )
@@ -51,28 +50,33 @@ class AppRouter extends React.Component<RouterProps> {
         return result
     }
     render() {
+        const { lazyRoute } = this
         return (
             <div>
                 <Route path="/" exact render={() => <Redirect to="/home" />} />
-                <Route path="/login" component={User} />
+                <Route path="/login" component={lazyRoute(`user`)} />
                 <Route
                     path="/home"
                     render={() => (
                         <Home>
                             <Switch>
-                                <Route path="/home" component={Content} exact />
+                                <Route
+                                    path="/home"
+                                    component={lazyRoute(`home/Content`)}
+                                    exact
+                                />
                                 <Route
                                     path="/home/components"
-                                    component={Content}
+                                    component={lazyRoute(`home/Content`)}
                                     exact
                                 />
                                 {this.routeComponents()}
-                                <Route component={Nomatch} />
+                                <Route component={lazyRoute(`home/Nomatch`)} />
                             </Switch>
                         </Home>
                     )}
                 />
-                <Route path="/detail" component={Detail} />
+                <Route path="/detail" component={lazyRoute(`detail/Detail`)} />
             </div>
         )
     }

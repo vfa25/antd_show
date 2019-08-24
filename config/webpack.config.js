@@ -250,6 +250,7 @@ module.exports = function (webpackEnv) {
             // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
             splitChunks: {
                 chunks: 'all',
+                maxSize: 200000,
                 name: false,
             },
             // Keep the runtime chunk separated to enable long term caching
