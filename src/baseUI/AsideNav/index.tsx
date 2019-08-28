@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Menu } from 'antd'
 import { connect } from 'react-redux'
-import { NavLink } from 'react-router-dom'
+import { NavLink, withRouter, RouteComponentProps } from 'react-router-dom'
 import { ItemMenu } from '@/utils/types'
 import './index.less'
 
@@ -15,7 +15,7 @@ interface AsideProps {
     categoryList: any
 }
 
-type AsideNavProps = Partial<AsideProps>
+type AsideNavProps = Partial<AsideProps> & RouteComponentProps
 
 class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
     static getDerivedStateFromProps(
@@ -36,13 +36,13 @@ class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
         return data.map(item => {
             if (item.children) {
                 return (
-                    <SubMenu title={item.desc} key={String(item.id)}>
+                    <SubMenu title={item.desc} key={item.id}>
                         {AsideNav.renderMenu(item.children)}
                     </SubMenu>
                 )
             }
             return (
-                <Item key={item.id}>
+                <Item key={item.key}>
                     <NavLink to={`/home${item.key}`}>
                         {item.name} {item.desc}
                     </NavLink>
@@ -59,12 +59,16 @@ class AsideNav extends React.Component<AsideNavProps, AsideNavState> {
     }
 
     render() {
-        const { categoryList } = this.props
+        const {
+            categoryList,
+            location: { pathname = '' }
+        } = this.props
         return (
             <div>
                 {categoryList ? (
                     <Menu
                         mode="inline"
+                        selectedKeys={[pathname.replace('/home', '')]}
                         defaultOpenKeys={categoryList.map((v: ItemMenu) =>
                             String(v.id)
                         )}
@@ -83,4 +87,4 @@ const mapStateToProps = (state: any) => ({
         state.getIn(['component', 'categoryList']).toJS()
 })
 
-export default connect(mapStateToProps)(AsideNav)
+export default connect(mapStateToProps)(withRouter(AsideNav))

@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import { Redirect, Switch, Route, RouteProps } from 'react-router-dom'
 import { connect } from 'react-redux'
+import hljs from 'highlight.js'
 import Home from './pages/home/Home'
 import allComponents from './pages/ui/index.md'
 
@@ -14,13 +15,15 @@ interface ConfigItem {
     name: React.ReactText
 }
 class AppRouter extends React.Component<RouterProps> {
-    lazyRoute(relativePath: string) {
-        const Component = lazy(() =>
-            import(
+    lazyRoute = (relativePath: string) => {
+        const Component = lazy(() => {
+            const lazyPackage = import(
                 /* webpackChunkName: "[request]" */
                 `./pages/${relativePath}`
             )
-        )
+            lazyPackage.then(this.nextTick)
+            return lazyPackage
+        })
         const ComponentWrap = (props: RouteProps) => {
             return (
                 <Suspense fallback={null}>
@@ -49,6 +52,14 @@ class AppRouter extends React.Component<RouterProps> {
         })
         return result
     }
+
+    nextTick = () => {
+        setTimeout(() => {
+            const blocks = document.querySelectorAll('pre code:not(.hljs)')
+            Array.prototype.forEach.call(blocks, hljs.highlightBlock)
+        }, 15)
+    }
+
     render() {
         const { lazyRoute } = this
         return (

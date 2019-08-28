@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { HashRouter } from 'react-router-dom'
-import { createStore, applyMiddleware, compose } from 'redux'
+import Redux, { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
@@ -9,14 +9,19 @@ import reducers from './reducer'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import './assets/global-class.less'
+import 'highlight.js/styles/vs2015.css'
 
+const isDev = process.env.NODE_ENV === 'development'
 declare var window: Window & { __REDUX_DEVTOOLS_EXTENSION__: any }
+
+const allMiddles: Redux.Middleware[] = [thunk]
+isDev && allMiddles.push(logger)
 
 export * from 'redux'
 export const store = createStore(
     reducers,
     compose(
-        applyMiddleware(thunk, logger),
+        applyMiddleware(...allMiddles),
         window.__REDUX_DEVTOOLS_EXTENSION__ &&
             window.__REDUX_DEVTOOLS_EXTENSION__()
     )

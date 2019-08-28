@@ -531,7 +531,7 @@ module.exports = function (webpackEnv) {
         },
         plugins: [
             new webpack.ProvidePlugin({
-                'Markdown': path.resolve(path.join(__dirname, '../src/components/Markdown/index.tsx'))
+                'Markdown': 'react-markdown'
             }),
             // Generates an `index.html` file with the <script> injected.
             new HtmlWebpackPlugin(

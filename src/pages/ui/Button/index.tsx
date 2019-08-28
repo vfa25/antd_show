@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { Card, Icon, Radio } from 'antd'
 import { default as Button, ButtonSize } from 'enterprise-antd/es/button'
 import button from './button.md'
-// import Markdown from '@/components/Markdown'
 import './index.less'
 
 function Buttons() {
@@ -17,7 +16,7 @@ function Buttons() {
     return (
         <div>
             <Card className="content-margin">
-                <Markdown.render source={button} />
+                <Markdown source={button} />
             </Card>
             <Card title="基础按钮" className="content-margin">
                 <Button>默认按钮</Button>
