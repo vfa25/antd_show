@@ -83,7 +83,7 @@ class Fetch {
         config?: AxiosRequestConfig,
         successTip?: string
     ) {
-        let prefix = ''
+        let prefix = '/api'
         const moduleName = fetchParam(moduleInfo)['moduleName']
         const apiName: string[] = fetchParam(moduleInfo)['apiName'].split('.')
         const id = fetchParam(moduleInfo)['id']

@@ -35,7 +35,7 @@
     "fs-extra": "7.0.1",
     "highlight.js": "^9.15.10",
     "html-webpack-plugin": "4.0.0-beta.5",
-    "identity-obj-proxy": "3.0.0",
+    "image-webpack-loader": "^5.0.0",
     "immutable": "^4.0.0-rc.12",
     "is-wsl": "^2.1.0",
     "jest": "24.7.1",
@@ -55,6 +55,8 @@
     "postcss-normalize": "7.0.1",
     "postcss-preset-env": "6.6.0",
     "postcss-safe-parser": "4.0.1",
+    "preload-webpack-plugin": "3.0.0-beta.3",
+    "qiniu": "^7.2.2",
     "raw-loader": "^3.1.0",
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.1",
@@ -87,8 +89,9 @@
     "test": "node scripts/test.js",
     "precommit": "npm run eslint && lint-staged",
     "eslint": "eslint --ext .tsx,.ts --fix ./src",
-    "prd:setup": "pm2 deploy ecosystem.yaml production setup",
-    "prd:deploy": "pm2 deploy ecosystem.yaml production"
+    "server:setup": "pm2 deploy ecosystem.yaml production setup",
+    "server:deploy": "pm2 deploy ecosystem.yaml production",
+    "deploy": "npm run build && node config/upload-cdn"
   },
   "config": {
     "commitizen": {
@@ -200,6 +203,5 @@
     "singleQuote": true,
     "printWidth": 80
   },
-  "homepage": "/enterprise-antd",
   "proxy": "https://www.vfa25.cn/"
 }

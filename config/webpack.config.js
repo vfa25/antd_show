@@ -7,6 +7,7 @@ const webpack = require('webpack');
 const resolve = require('resolve');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -250,7 +251,7 @@ module.exports = function (webpackEnv) {
             // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
             splitChunks: {
                 chunks: 'all',
-                maxSize: 200000,
+                maxSize: 500000,
                 name: false,
             },
             // Keep the runtime chunk separated to enable long term caching
@@ -339,11 +340,39 @@ module.exports = function (webpackEnv) {
                         // A missing `test` is equivalent to a match.
                         {
                             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-                            loader: require.resolve('url-loader'),
-                            options: {
-                                limit: 10000,
-                                name: 'static/media/[name].[hash:8].[ext]',
-                            },
+                            use: [
+                                {
+                                    loader: require.resolve('url-loader'),
+                                    options: {
+                                        limit: 10000,
+                                        name: 'static/media/[name].[hash:8].[ext]',
+                                    }
+                                },
+                                {
+                                    loader: require.resolve('image-webpack-loader'),
+                                    options: {
+                                        mozjpeg: {
+                                            progressive: true,
+                                            quality: 65
+                                        },
+                                        // optipng.enabled: false will disable optipng
+                                        optipng: {
+                                            enabled: false,
+                                        },
+                                        pngquant: {
+                                            quality: '65-90',
+                                            speed: 4
+                                        },
+                                        gifsicle: {
+                                            interlaced: false,
+                                        },
+                                        // 暂不考虑webp格式
+                                        // webp: {
+                                        //   quality: 75
+                                        // }
+                                    }
+                                }
+                            ]
                         },
                         // Process application JS with Babel.
                         // The preset includes JSX, Flow, TypeScript, and some ESnext features.
@@ -557,6 +586,10 @@ module.exports = function (webpackEnv) {
                     undefined
                 )
             ),
+            new PreloadWebpackPlugin({
+                rel: 'preload',
+                include: 'initial'
+            }),
             // Inlines the webpack runtime script. This script is too small to warrant
             // a network request.
             isEnvProduction &&
