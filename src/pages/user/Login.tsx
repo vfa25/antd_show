@@ -66,11 +66,7 @@ class Login extends React.Component<FromsPropsType> {
                     )}
                 </Item>
                 <Item>
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a href="#" className="float-right">
-                        {' '}
-                        忘记密码
-                    </a>
+                    <span className="float-right enable-click">忘记密码</span>
                 </Item>
                 <Item>
                     <Button type="primary" block onClick={this.submit}>

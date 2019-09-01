@@ -8,6 +8,7 @@ export const httpCode: KeysMap<any> = {
     '500': '貌似，服务器内部资源出故障了',
     '503': '抱歉，现在我在忙，请稍后再试'
 }
+export const ignoreErrorCode: string[] = []
 // HTTP_400_BAD_REQUEST = 400
 // HTTP_401_UNAUTHORIZED = 401
 // HTTP_402_PAYMENT_REQUIRED = 402

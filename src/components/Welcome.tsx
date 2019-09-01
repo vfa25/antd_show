@@ -1,5 +1,5 @@
 import React from 'react'
-import content from './content.md'
+import content from './welcome.md'
 
 export default function Content() {
     return (

@@ -4,5 +4,6 @@ export const COMPONENT = {
     GET_CATEGORY_LIST_FAIL: 'get category list fail'
 }
 export const USER = {
-    SET_USERINFO: 'set user infomation'
+    SET_USERINFO: 'set user infomation',
+    LOGOUT: 'user logouted'
 }

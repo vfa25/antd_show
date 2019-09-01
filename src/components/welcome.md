@@ -37,7 +37,7 @@
 
 这点`antd`和`element-ui`均支持定制主题，而后者还可即时查看全局和组件的`Design Tokens`（设计词元）修改，如下图：
 
-![element-ui主题](/assets/ele/theme-custom.png)
+![element-ui主题](https://imgs.vfa25.cn/theme-custom.72d0d870.png)
 
 `element-ui`组件的样式、公共样式在`packages/theme-chalk`文件中，
 `antd`组件的样式、公共样式在`components/config-provider`。
@@ -46,7 +46,7 @@
 
 而`element-ui`的线上主题更改，原理很简单————请求了个CSS文本，动态插入到`head`标签的底部，来覆盖默认样式；不过这必需要`Node Server`的配合。
 
-![element-ui主题的post请求](/assets/ele/theme-xhr.png)
+![element-ui主题的post请求](https://imgs.vfa25.cn/theme-xhr.ce13bc50.png)
 
 相关代码在`examples/components/theme/loader/index.vue`
 

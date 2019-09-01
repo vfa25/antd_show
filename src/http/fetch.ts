@@ -76,13 +76,19 @@ class Fetch {
      * @param moduleInfo 对应fetch配置的名字
      * @param payload 负载
      * @param config http配置
+     * @param successTip 自定义成功提示
      */
     fetch(
         moduleInfo: string,
         payload?: object,
-        config?: AxiosRequestConfig,
+        config?: AxiosRequestConfig | string,
         successTip?: string
     ) {
+        // 参数归一
+        if (typeof config === 'string') {
+            successTip = config
+            config = undefined
+        }
         let prefix = '/api'
         const moduleName = fetchParam(moduleInfo)['moduleName']
         const apiName: string[] = fetchParam(moduleInfo)['apiName'].split('.')

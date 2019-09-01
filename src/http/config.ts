@@ -6,7 +6,7 @@
 
 import axios from 'axios'
 import { notification } from 'antd'
-import { httpCode } from './statusCode'
+import { httpCode, ignoreErrorCode } from './statusCode'
 
 // 配置 Content-Type。'post', 'put', 'patch'默认都是'application/x-www-form-urlencoded'
 // https://github.com/axios/axios/blob/master/lib/defaults.js   第94行
@@ -55,10 +55,15 @@ axios.interceptors.response.use(
             if (data && String(data) === '[object Object]') {
                 Object.keys(data).forEach(v => {
                     if (!Array.isArray(data[v])) {
-                        errorDesc += data[v]
+                        errorDesc += data[v] + '\t\n'
+                    } else if (!ignoreErrorCode.includes(v)) {
+                        errorDesc += data[v].join('；') + '\t\n'
                     }
-                    // errorDesc += Array.isArray(data[v]) ? data[v].join('\n') : data[v]
                 })
+                errorDesc = errorDesc.trim()
+                if (errorDesc.slice(-1) !== '。') {
+                    errorDesc = errorDesc + '。'
+                }
             }
             if (status && httpCode[status]) {
                 errorTitle = httpCode[status]

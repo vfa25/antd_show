@@ -23,12 +23,17 @@ class Register extends React.Component<FromsPropsType> {
     getCaptcha = () => {
         this.props.form.validateFields(['mobile'], (err, values) => {
             if (!err) {
-                http.fetch('user.smscode', { mobile: values.mobile }).then(
-                    res => {
-                        // eslint-disable-next-line no-console
-                        console.log(res)
+                http.fetch(
+                    'user.smscode',
+                    { mobile: values.mobile },
+                    '短信验证码已发送到您的手机，请注意查收'
+                ).catch(err => {
+                    if (String(err.data) === '[object Object]') {
+                        this.props.form.setFields(
+                            formErrHandle(values, err.data)
+                        )
                     }
-                )
+                })
             }
         })
     }

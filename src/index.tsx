@@ -5,7 +5,7 @@ import Redux, { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
-import reducers from './reducer'
+import reducers from './reducers'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import './assets/global-class.less'
@@ -18,6 +18,8 @@ const allMiddles: Redux.Middleware[] = [thunk]
 isDev && allMiddles.push(logger)
 
 export * from 'redux'
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/indent */
 export const store = createStore(
     reducers,
     isDev && window
@@ -28,7 +30,8 @@ export const store = createStore(
           )
         : applyMiddleware(...allMiddles)
 )
-
+/* eslint-enable prettier/prettier */
+/* eslint-enable @typescript-eslint/indent */
 ReactDOM.render(
     <Provider store={store}>
         <HashRouter>

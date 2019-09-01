@@ -14,3 +14,11 @@ export function setUserInfo() {
         })
     })
 }
+
+export function UserLogout() {
+    const username = Cookies.remove('username')
+    const token = Cookies.remove('token')
+    return store.dispatch({
+        type: USER.LOGOUT
+    })
+}

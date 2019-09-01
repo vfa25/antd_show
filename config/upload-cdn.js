@@ -6,7 +6,7 @@ const assetsName = 'build'
 
 const noNeedUploadFileList = []
 
-const cdnConfig = require('./qiniu-cdn.config').cdn
+const cdnConfig = require('../app.config').cdn
 
 const {
     ak,

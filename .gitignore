@@ -24,4 +24,4 @@ yarn-error.log*
 
 ecosystem.yaml
 
-config/qiniu-cdn.config.js
+app.config.*

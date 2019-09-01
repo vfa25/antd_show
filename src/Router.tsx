@@ -3,7 +3,7 @@ import { Redirect, Switch, Route, RouteProps } from 'react-router-dom'
 import { connect } from 'react-redux'
 import hljs from 'highlight.js'
 import Home from './pages/home/Home'
-import allComponents from './pages/ui/index.md'
+import allComponents from './components/index.md'
 
 const ui: React.ReactText[] = allComponents.trim().split(/[\t\n]+/)
 
@@ -19,7 +19,7 @@ class AppRouter extends React.Component<RouterProps> {
         const Component = lazy(() => {
             const lazyPackage = import(
                 /* webpackChunkName: "[request]" */
-                `./pages/${relativePath}`
+                `./${relativePath}`
             )
             lazyPackage.then(this.nextTick)
             return lazyPackage
@@ -45,7 +45,7 @@ class AppRouter extends React.Component<RouterProps> {
             return (
                 <Route
                     path={`/home${v.key}`}
-                    component={this.lazyRoute(`ui/${v.name}`)}
+                    component={this.lazyRoute(`components/${v.name}`)}
                     key={v.key}
                 />
             )
@@ -65,7 +65,7 @@ class AppRouter extends React.Component<RouterProps> {
         return (
             <div>
                 <Route path="/" exact render={() => <Redirect to="/home" />} />
-                <Route path="/login" component={lazyRoute(`user`)} />
+                <Route path="/login" component={lazyRoute(`pages/user`)} />
                 <Route
                     path="/home"
                     render={() => (
@@ -73,21 +73,26 @@ class AppRouter extends React.Component<RouterProps> {
                             <Switch>
                                 <Route
                                     path="/home"
-                                    component={lazyRoute(`home/Content`)}
+                                    component={lazyRoute(`components/Welcome`)}
                                     exact
                                 />
                                 <Route
                                     path="/home/components"
-                                    component={lazyRoute(`home/Content`)}
+                                    component={lazyRoute(`components/Welcome`)}
                                     exact
                                 />
                                 {this.routeComponents()}
-                                <Route component={lazyRoute(`home/Nomatch`)} />
+                                <Route
+                                    component={lazyRoute(`pages/home/Nomatch`)}
+                                />
                             </Switch>
                         </Home>
                     )}
                 />
-                <Route path="/detail" component={lazyRoute(`detail/Detail`)} />
+                <Route
+                    path="/detail"
+                    component={lazyRoute(`pages/detail/Detail`)}
+                />
             </div>
         )
     }
